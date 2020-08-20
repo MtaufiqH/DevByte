@@ -3,6 +3,8 @@ package app.taufiq.devbyte.viewmodels
 import android.app.Application
 import androidx.lifecycle.*
 import app.taufiq.devbyte.domain.DevbyteVideos
+import app.taufiq.devbyte.network.DevByteNetwork
+import app.taufiq.devbyte.network.asDomainModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -97,10 +99,17 @@ class DevbytesViewmodel(application: Application) : AndroidViewModel(application
 
 
     private fun refreshDataFromNetwork() = viewmodelScope.launch {
-
         try {
+            val playlists = DevByteNetwork.devbytes.getPlaylist().await()
+            _playlist.postValue(playlists.asDomainModel())
+            _eventNetworkError.value = false
+            _isNetworkErrorShown.value = false
+
 
         } catch (e: IOException) {
+            // Show a Toast error message and hide the progress bar.
+            _isNetworkErrorShown.value = true
+
 
         }
     }

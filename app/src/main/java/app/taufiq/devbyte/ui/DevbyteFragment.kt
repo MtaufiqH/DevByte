@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import app.taufiq.devbyte.R
 import app.taufiq.devbyte.databinding.FragmentDevbyteBinding
+import app.taufiq.devbyte.domain.DevbyteVideos
 import app.taufiq.devbyte.viewmodels.DevbytesViewmodel
 
 
@@ -31,8 +34,16 @@ class DevbyteFragment : Fragment() {
     }
 
 
+    private var viewModelAdapter: DevByteAdapter? = null
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        viewModel.playlist.observe(viewLifecycleOwner, Observer<List<DevbyteVideos>> {
+            it.apply {
+                viewModelAdapter?.videos = videos
+            }
+        }
 
     }
 
@@ -45,7 +56,10 @@ class DevbyteFragment : Fragment() {
             inflater,
             R.layout.fragment_devbyte,
             container,
-            false)
+            false
+        )
+
+
 
 
         // set lifecycle owner so databinding can observe Livedata
