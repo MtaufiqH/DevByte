@@ -1,4 +1,4 @@
-package app.taufiq.devbyte.ui
+package app.taufiq.devbyte.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

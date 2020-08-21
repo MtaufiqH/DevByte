@@ -8,6 +8,10 @@
         <variable
             name="video"
             type="app.taufiq.devbyte.domain.DevbyteVideos" />
+
+        <variable
+            name="videoCallback"
+            type="app.taufiq.devbyte.adapter.VideoClick" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -68,6 +72,7 @@
                 android:layout_marginTop="16dp"
                 android:textAlignment="viewStart"
                 android:textAllCaps="false"
+                android:text="@{video.title}"
                 android:textColor="@color/text_black"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -81,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="@{video.description}"
+                android:text="@{video.shortDescription}"
                 android:textAllCaps="false"
                 android:textColor="@color/text_light"
                 android:textSize="14sp"
@@ -95,8 +100,7 @@
                 android:id="@+id/clickable_overlay"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:onClick="@{}"
-                android:background="?attr/selectableItemBackground"
+                android:onClick="@{videoCallback.onClick(video)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

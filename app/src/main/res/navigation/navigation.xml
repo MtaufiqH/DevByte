@@ -8,6 +8,6 @@
     <fragment
         android:id="@+id/devbyteFragment"
         tools:layout="@layout/fragment_devbyte"
-        android:name="app.taufiq.devbyte.ui.DevbyteFragment"
+        android:name="app.taufiq.devbyte.view.DevbyteFragment"
         android:label="DevbyteFragment" />
 </navigation>
