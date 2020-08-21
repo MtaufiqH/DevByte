@@ -13,9 +13,12 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+
     }
 
     buildTypes {
@@ -27,6 +30,11 @@ android {
 
     dataBinding {
         enabled = true
+    }
+
+    compileOptions{
+        targetCompatibility = "8"
+        sourceCompatibility = "8"
     }
 }
 
@@ -78,5 +86,7 @@ dependencies {
     def nav_version = "1.0.0"
     implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version"
     implementation "android.arch.navigation:navigation-ui-ktx:$nav_version"
+
+    implementation 'com.android.support:multidex:1.0.3'
 
 }

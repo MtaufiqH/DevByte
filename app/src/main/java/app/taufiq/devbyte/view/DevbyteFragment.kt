@@ -104,8 +104,8 @@ class DevbyteFragment : Fragment() {
 
 
     private fun onNetworkError() {
-        if (!viewModel.isNetworkErrorShown.value!!) {
-            Toast.makeText(activity, "NetworkError", Toast.LENGTH_SHORT).show()
+        if (viewModel.isNetworkErrorShown.value!!) {
+            Toast.makeText(activity, "NetworkError", Toast.LENGTH_LONG).show()
             viewModel.onNetworkErrorShown()
         }
     }

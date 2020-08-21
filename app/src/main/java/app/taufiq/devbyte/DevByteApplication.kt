@@ -1,6 +1,7 @@
 package app.taufiq.devbyte
 
 import android.app.Application
+import androidx.multidex.MultiDexApplication
 import timber.log.Timber
 
 /**
