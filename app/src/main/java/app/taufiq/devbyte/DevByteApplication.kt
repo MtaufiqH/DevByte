@@ -1,10 +1,8 @@
 package app.taufiq.devbyte
 
 import android.app.Application
-import androidx.multidex.MultiDexApplication
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import android.os.Build
+import androidx.work.*
 import app.taufiq.devbyte.work.RefreshDataWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,18 +30,33 @@ class DevByteApplication : Application() {
     }
 
 
-
     /*
     * Setup work manager
     * */
 
-    private fun setupRecurringWork(){
+    private fun setupRecurringWork() {
+        val constraints = Constraints.Builder()
+//                work request will only run when the device is on an unmetered network
+            .setRequiredNetworkType(NetworkType.UNMETERED)
+            .setRequiresBatteryNotLow(true)
+            .setRequiresCharging(true)
+            .apply {
+                /** This feature is only available in Android 6.0 (Marshmallow) and higher,
+                 *  so add a condition for SDK version M and higher.*/
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    setRequiresDeviceIdle(true)
+                }
+            }
+            .build()
+
         val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(
             repeatInterval = 1,
             repeatIntervalTimeUnit = TimeUnit.DAYS
-        ).build()
+        )
+            .setConstraints(constraints).build()
 
 
+        Timber.d("Periodic Work request for sync is scheduled")
         @Suppress("DEPRECATION")
         WorkManager.getInstance().enqueueUniquePeriodicWork(
             RefreshDataWorker.WORK_NAME,
@@ -52,13 +65,12 @@ class DevByteApplication : Application() {
         )
     }
 
-    fun delayInit(){
+    fun delayInit() {
         applicationScope.launch {
             Timber.plant(Timber.DebugTree())
             setupRecurringWork()
         }
     }
-
 
 
 }
