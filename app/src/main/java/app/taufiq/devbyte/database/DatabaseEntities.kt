@@ -23,6 +23,9 @@ data class DatabaseVideo constructor(
     val thumbnail: String
 )
 
+/**
+ * Map DatabaseVideos to domain entities
+ */
 fun List<DatabaseVideo>.asDomainModel(): List<DevbyteVideos> {
     return map {
         DevbyteVideos(

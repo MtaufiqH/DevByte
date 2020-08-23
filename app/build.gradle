@@ -93,4 +93,8 @@ dependencies {
     implementation "androidx.room:room-runtime:2.2.5"
     kapt "androidx.room:room-compiler:2.2.5"
 
+    // work manager
+    def work_version= "2.4.0"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+
 }

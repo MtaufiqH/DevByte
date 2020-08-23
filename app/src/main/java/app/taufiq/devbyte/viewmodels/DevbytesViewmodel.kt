@@ -2,13 +2,15 @@ package app.taufiq.devbyte.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
-import app.taufiq.devbyte.domain.DevbyteVideos
+import app.taufiq.devbyte.database.getDatabase
 import app.taufiq.devbyte.network.DevByteNetwork
 import app.taufiq.devbyte.network.asDomainModel
+import app.taufiq.devbyte.repository.VideoRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.IOException
 
 /**
@@ -30,6 +32,16 @@ import java.io.IOException
 class DevbytesViewmodel(application: Application) : AndroidViewModel(application) {
 
     /**
+     * The data source this ViewModel will fetch results from.
+     */
+    private val videoRepository = VideoRepository(getDatabase(application))
+
+    /**
+     * A playlist of videos displayed on the screen.
+     */
+    val playlist = videoRepository.videos
+
+    /**
      * This is the Job for all coroutines started by this viewmodel
      *
      * canceling this job will cancel all coroutines started by this.
@@ -44,20 +56,6 @@ class DevbytesViewmodel(application: Application) : AndroidViewModel(application
      * viewModelJob.cancel()
      */
     private val viewmodelScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
-
-    /**
-     * A playlist of videos that can be shown on the screen. This is private to avoid exposing a
-     * way to set this value to observers.
-     */
-    private val _playlist = MutableLiveData<List<DevbyteVideos>>()
-
-    /**
-     * A playlist of videos that can be shown on the screen. Views should use this to get access
-     * to the data.
-     */
-    val playlist: LiveData<List<DevbyteVideos>>
-        get() = _playlist
 
 
     /**
@@ -94,32 +92,29 @@ class DevbytesViewmodel(application: Application) : AndroidViewModel(application
 
     init {
 
-        refreshDataFromNetwork()
+        refreshDataFromRepository()
     }
 
 
-    private fun refreshDataFromNetwork() = viewmodelScope.launch {
+    private fun refreshDataFromRepository() = viewmodelScope.launch {
         try {
-            val playlists = DevByteNetwork.devbytes.getPlaylist().await()
-            _playlist.postValue(playlists.asDomainModel())
+            videoRepository.refreshVideo()
             _eventNetworkError.value = false
             _isNetworkErrorShown.value = false
-
-
-        } catch (e: IOException) {
-            // Show a Toast error message and hide the progress bar.
-            _isNetworkErrorShown.value = true
-
+        } catch (networkError: IOException) {
+            if (playlist.value.isNullOrEmpty()) {
+                Timber.d("Network error")
+                _eventNetworkError.value = true
+            }
 
         }
     }
-
 
     /**
      * Resets the network error log
      * */
     fun onNetworkErrorShown() {
-        _isNetworkErrorShown.value = null
+        _isNetworkErrorShown.value = true
     }
 
 

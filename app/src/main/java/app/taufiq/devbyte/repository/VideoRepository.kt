@@ -9,6 +9,7 @@ import app.taufiq.devbyte.network.DevByteNetwork
 import app.taufiq.devbyte.network.asDatabaseModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 /**
  * Created By Taufiq on 8/18/2020.
@@ -31,8 +32,8 @@ class VideoRepository(private val database: VideoDatabase) {
      */
     suspend fun refreshVideo() {
         withContext(Dispatchers.IO) {
+            Timber.d("Refresh video is called!")
             val playlist = DevByteNetwork.devbytes.getPlaylist().await()
-
             database.videoDao.insertAll(playlist.asDatabaseModel())
         }
     }

@@ -64,6 +64,9 @@ fun NetworkVideoContainer.asDomainModel(): List<DevbyteVideos> {
     }
 }
 
+/**
+ * Convert Network results to database objects
+ */
 fun NetworkVideoContainer.asDatabaseModel(): List<DatabaseVideo>{
     return videos.map {
         DatabaseVideo(
